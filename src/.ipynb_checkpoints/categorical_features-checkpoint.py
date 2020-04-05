@@ -53,17 +53,13 @@ class CategoricalFeatures:
          one_hot_encoders.fit(self.df[self.cat_feats].values)
          return one_hot_encoders.transform(self.df[self.cat_feats].values)
 
-    def _get_dummies(self):
-        self.output_df = pd.get_dummies(self.df, columns=self.cat_feats, dummy_na=True)
-        return self.output_df
-
     def fit_transform(self):
         if self.enc_type == "label":
             return self._label_encoding()
         elif self.enc_type == "binary":
             return self._binarization_encoding()
         elif self.enc_type == "one_hot":
-            return self._get_dummies()
+            return self._one_hot_encoding()
         else:
             raise Exception("Encoding type not supported!")
          
