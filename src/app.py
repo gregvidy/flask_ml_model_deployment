@@ -21,7 +21,7 @@ def index():
 
 def get_prediction():
 
-    helpers = joblib.load('titanic.pkl')
+    helpers = joblib.load('../models/randomforest_1.pkl')
     model = helpers['model']
 
     passenger = {};
@@ -38,7 +38,7 @@ def get_prediction():
 
     data = pd.DataFrame(passenger, index=[0])
 
-    X = pp.process_test_data(data, helpers)
+    X = pp.preprocessing(data, helpers)
     survived = model.predict(X)
 
     survived = 'yes' if survived else 'no'
