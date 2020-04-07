@@ -26,6 +26,7 @@ def preprocessing(df):
     df["Age_Bin"] = pd.cut(df["Age"].astype(int), 5)
 
     # categorical features encoding
+    test_id = df[df["Survived"] == -1]["PassengerId"].copy()
     df.drop(columns=["Cabin","Name","PassengerId","Ticket"], inplace=True)
     cols = [c for c in df.columns if c not in ["Age",
                                                "Fare",
@@ -37,9 +38,11 @@ def preprocessing(df):
     cat_feats = CategoricalFeatures(df, categorical_features=cols, encoding_type="one_hot",handle_na=True)
     df_transformed = cat_feats.fit_transform()
 
+    # split to train_df and test_df
     train_df = df_transformed[df_transformed["Survived"] != -1]
     test_df = df_transformed[df_transformed["Survived"] == -1]
 
+    test_df["PassengerId"] = test_id.copy()
     test_df.drop(["Survived"], axis=1, inplace=True)
     return train_df, test_df
 
