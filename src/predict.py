@@ -13,7 +13,7 @@ MODEL = os.environ.get("MODEL")
 
 def predict():
     df = pd.read_csv(TEST_DATA)
-    test_idx = df["id"].values
+    test_idx = df["PassengerId"].values
     predictions = None
 
     for FOLD in range(5):
@@ -34,7 +34,8 @@ def predict():
     
     predictions /= 5
     
-    sub = pd.DataFrame(np.column_stack((test_idx, predictions)), columns=["id", "Survived"])
+    sub = pd.DataFrame(np.column_stack((test_idx, predictions)), columns=["PassengerId", "Survived"])
+    sub["PassengerId"] = sub["PassengerId"].astype(int)
     return sub
 
 if __name__ == "__main__":
