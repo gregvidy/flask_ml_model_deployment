@@ -8,7 +8,6 @@ from .cross_validation import CrossValidation
 from . import dispatcher
 
 TRAINING_DATA = os.environ.get("TRAINING_DATA")
-TEST_DATA = os.environ.get("TEST_DATA")
 FOLD = int(os.environ.get("FOLD"))
 MODEL = os.environ.get("MODEL")
 
@@ -23,7 +22,6 @@ FOLD_MAPPING = {
 if __name__ == "__main__":
     # calling the data
     df = pd.read_csv(TRAINING_DATA)
-    df_test = pd.read_csv(TEST_DATA)
     df["kfold"] = -1
 
     cv = CrossValidation(df,
