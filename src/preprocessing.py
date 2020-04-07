@@ -26,8 +26,6 @@ def preprocessing(df):
     df["Age_Bin"] = pd.cut(df["Age"].astype(int), 5)
 
     # categorical features encoding
-    test_id = df[df["Survived"] == -1]["PassengerId"].copy()
-    df.drop(columns=["Cabin","Name","PassengerId","Ticket"], inplace=True)
     cols = [c for c in df.columns if c not in ["Age",
                                                "Fare",
                                                "Cabin",
@@ -38,13 +36,7 @@ def preprocessing(df):
     cat_feats = CategoricalFeatures(df, categorical_features=cols, encoding_type="one_hot",handle_na=True)
     df_transformed = cat_feats.fit_transform()
 
-    # split to train_df and test_df
-    train_df = df_transformed[df_transformed["Survived"] != -1]
-    test_df = df_transformed[df_transformed["Survived"] == -1]
-
-    test_df["PassengerId"] = test_id.copy()
-    test_df.drop(["Survived"], axis=1, inplace=True)
-    return train_df, test_df
+    return df_transformed
 
 
 if __name__ == "__main__":
@@ -53,7 +45,15 @@ if __name__ == "__main__":
     test["Survived"] = -1
 
     full_data = pd.concat([train, test], axis=0)    
-    train_df, test_df = preprocessing(full_data)
+    df_transformed = preprocessing(full_data)
+    
+    # split to train_df and test_df
+    train_df = df_transformed[df_transformed["Survived"] != -1]
+    test_df = df_transformed[df_transformed["Survived"] == -1]
+
+    # dropping columns for both train and test
+    train_df.drop(columns=["Cabin","Name","PassengerId","Ticket"], axis=1, inplace=True)
+    test_df.drop(columns=["Cabin","Name","Survived","Ticket"], axis=1, inplace=True)
 
     train_df.to_csv("../input/train_preprocessed.csv", index=False)
     test_df.to_csv("../input/test_preprocessed.csv", index=False)
