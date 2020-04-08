@@ -45,8 +45,8 @@ if __name__ == "__main__":
     clf = dispatcher.MODELS[MODEL]
     clf.fit(train_df, ytrain)
     preds = clf.predict_proba(valid_df)[:, 1]
-    print(metrics.roc_auc_score(yvalid, preds))
-    print(metrics.log_loss(yvalid, preds))
+    print(f"ROC-AUC score for {MODEL}_{FOLD} is: ", metrics.roc_auc_score(yvalid, preds))
+    print(f"LogLoss score for {MODEL}_{FOLD} is: ", metrics.log_loss(yvalid, preds))
 
     joblib.dump(clf, f"models/{MODEL}_{FOLD}.pkl")
     joblib.dump(train_df.columns, f"models/{MODEL}_{FOLD}_columns.pkl")
