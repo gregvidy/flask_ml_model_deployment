@@ -33,7 +33,7 @@ def predict():
             predictions += preds
     
     predictions /= 5
-    label_predictions = [1 if x > 0.5 else 0 for x in predictions]
+    label_predictions = [1 if x >= 0.5 else 0 for x in predictions]
     
     sub = pd.DataFrame(np.column_stack((test_idx, label_predictions)), columns=["PassengerId", "Survived"])
     sub["PassengerId"] = sub["PassengerId"].astype(int)
