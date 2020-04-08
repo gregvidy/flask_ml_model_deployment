@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import StandardScaler
 from categorical_features import CategoricalFeatures
 
 
@@ -24,17 +25,27 @@ def preprocessing(df):
     df["Family_Size"] = df["SibSp"] + df["Parch"] + 1
     df["Fare_Bin"] = pd.qcut(df["Fare"], 4)
     df["Age_Bin"] = pd.cut(df["Age"].astype(int), 5)
-
+    
     # categorical features encoding
     cols = [c for c in df.columns if c not in ["Age",
                                                "Fare",
+                                               "SibSp",
+                                               "Parch",
+                                               "Family_Size",
                                                "Cabin",
                                                "Name",
                                                "PassengerId",
                                                "Survived",
                                                "Ticket"]]
-    cat_feats = CategoricalFeatures(df, categorical_features=cols, encoding_type="one_hot",handle_na=True)
+    cat_feats = CategoricalFeatures(df, categorical_features=cols, encoding_type="one_hot", handle_na=True)
     df_transformed = cat_feats.fit_transform()
+
+    # apply standard_scaler for all variables
+    scaler = StandardScaler()
+    numeric_cols = ["Age","SibSp","Parch","Fare","Family_Size"]
+    for col in numeric_cols:
+        scaler.fit(df_transformed[col].values.reshape(-1, 1))
+        df_transformed[col] = scaler.transform(np.array(df_transformed[col]).reshape(-1, 1))
 
     return df_transformed
 
