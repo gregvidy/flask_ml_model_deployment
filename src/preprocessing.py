@@ -24,7 +24,7 @@ def preprocessing(df):
     # add several new variables
     df["Family_Size"] = df["SibSp"] + df["Parch"] + 1
     df["Fare_Bin"] = pd.qcut(df["Fare"], 4)
-    df["Age_Bin"] = pd.cut(df["Age"].astype(int), 5)
+    df["Age_Bin"] = pd.qcut(df["Fare"], 4)
     df["Is_Alone"] = df["Family_Size"].apply(lambda x: 1 if x <= 1 else 0)
     
     # categorical features encoding
